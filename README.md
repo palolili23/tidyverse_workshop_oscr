@@ -7,9 +7,9 @@
 
 #### Welcome &#x1F44B;&#x1F3FD;&#x1F44B;&#x1F3FD;
 
-If you are enthusiastic about open science and want to improve your research skills by learning R, this course is for you! 
+If you often do data analysis, are enthusiastic about open science and want to improve your skills in R, this course is for you! 
 
-During this 90' workshop, we will have a hands on experience on handling data using the [*tidyverse*](https://www.tidyverse.org/) packages. We will go from raw and untidy data to a dataset that sparks joy and is ready to be plotted and analysed. 
+During this 90' workshop, we will have a hands-on experience on handling data using the [*tidyverse*](https://www.tidyverse.org/) packages. We will go from raw and untidy data to a dataset that sparks joy and is ready to be plotted and analysed. 
 
 -----
 
