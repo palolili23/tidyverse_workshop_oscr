@@ -1,27 +1,36 @@
 
 ## A crash course on data handling in R, the tidyverse way &#x1F4A5;
 
+-----
 
-### Welcome &#x1F44B;&#x1F3FD;&#x1F44B;&#x1F3FD;
+## About
 
+#### Welcome &#x1F44B;&#x1F3FD;&#x1F44B;&#x1F3FD;
 
 If you are enthusiastic about open science and want to improve your research skills by learning R, this course is for you! 
 
-During this 90' workshop, we will have a hands on experience on handling data using the [*tidyverse*](https://www.tidyverse.org/) packages.
+During this 90' workshop, we will have a hands on experience on handling data using the [*tidyverse*](https://www.tidyverse.org/) packages. We will go from raw and untidy data to a dataset that sparks joy and is ready to be plotted and analysed. 
 
-We will go from raw and untidy data to a dataset that sparks joy and is ready to be plotted and analysed. 
+-----
+
+## Goals
+
 
 During the session you will learn:
 
 - What is the Tidyverse and differences with base R
 
-- How to clean data with `dplyr`
+- How to clean and transform your data with `dplyr`
 
 - How to use the pipe `%>%` operator
 
 - What is tidy data and how to make your raw data tidy &#x2728;
 
 - The ggplot grammar &#x1F4C8;&#x1F4CA;
+
+-----
+
+## Preparation
 
 For this workshop we will use [RStudio Cloud](https://rstudio.cloud/), a cloud-based version of R and RStudio available through your browser. To joint the workshop, please _sign up for a free account_ on Rstudio Cloud before the workshop. We will send an email before the meeting with the link to the project.
 
