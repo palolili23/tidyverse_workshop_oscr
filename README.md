@@ -32,3 +32,5 @@ If you prefer to work directly in your computer, you will be able to download th
 &#x2714; A recent version of RStudio IDE (~1.3), available for free at [www.rstudio.com/download](https://rstudio.com/products/rstudio/download/)
 
 &#x2714; Install the following packages by connecting to the internet, opening RStudio, and running: install.packages(c("tidyverse", "here"))
+
+All the content for this workshop will be uploaded to the [github repo](https://github.com/palolili23/tidyverse_workshop_oscr) before the event.
