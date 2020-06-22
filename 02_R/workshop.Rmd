@@ -1,0 +1,388 @@
+---
+title: "Workshop"
+date: '`r Sys.Date()`'
+output: 
+  html_document:
+    toc: TRUE
+    toc_float: TRUE
+editor_options: 
+  chunk_output_type: console
+---
+
+
+# Hands on!
+
+- You can sign to Rstudio cloud, and join the project. Make a **permanent copy** by clicking at right top corner. 
+
+Or 
+
+- Download the project folder from github
+
+- Open the tidyverse library
+
+```{r, message = FALSE}
+library(tidyverse)
+library(here)
+```
+
+## Import with `read_csv`
+
+```{r, message=FALSE}
+
+got_char <- read_csv(here("01_data", "got_char.csv"))
+
+got_houses <- read_csv(here("01_data", "got_houses.csv"))
+
+```
+
+## 1. Exercise 1. Top 10 
+
+### 1. Merge the two datasets with `left_join`
+
+1. Pick identifier/key variables on each dataset.
+
+2. Choose how you want to merge: [Animated joins by @gadenbuie](https://github.com/gadenbuie/tidyexplain)
+
+```{r}
+got_complete <- got_char %>% 
+  left_join(got_houses, by = c("actor" = "name"))
+```
+
+
+
+### 2. Make new columns with `mutate`
+
+- Make new columns
+
+```{r}
+got_rank <- got_complete %>%
+  mutate(total = season_1 + season_2 + season_3)
+```
+
+```{r, echo = FALSE}
+got_rank %>% 
+  select(actor, total) %>%
+  head()
+```
+
+### 3. Reorganize your rows with `arrange` 
+
+
+Ascending
+```{r, eval = FALSE}
+got_rank <- got_rank %>% 
+  arrange(total)
+```
+
+
+Descending
+
+```{r}
+got_rank <- got_rank %>% 
+  arrange(desc(total))
+```
+
+### 4. Select and reorder columns with `select`
+
+- Helpful feats of `select`
+- starts_with("season")
+- ends_with("")
+- contains("hous")
+- matches(<regex>)
+- -c(house_a, gender)
+- everything()
+
+```{r}
+got_rank <- got_rank %>%
+  select(actor, total, house_a) 
+
+got_rank %>% 
+    dim()
+```
+
+
+### 5. **`rename`** variables
+
+```{r}
+got_rank <- got_rank %>% 
+  rename(Character = actor,
+         House = house_a,
+         `Total acting time` = total)
+```
+
+### 6. **`slice`** rows
+
+```{r}
+got_rank <- got_rank %>% 
+  slice(1:10)
+```
+
+### Pipe all steps and...tada!
+
+```{r}
+got_char %>%
+  left_join(got_houses, by = c("actor" = "name")) %>% 
+  mutate(total = (season_1 + season_2 + season_3)) %>% 
+  arrange(desc(total)) %>% 
+  select(actor, total, house_a) %>% 
+  slice(1:10) %>% 
+  rename(Character = actor,
+         House = house_a,
+         `Total acting time` = total)
+```
+
+## Exercise 2. How is the gender distribution across houses?
+
+### 1. Explore the variables with `count`
+
+```{r}
+got_houses %>% 
+  count(gender)
+```
+
+```{r}
+got_houses %>% 
+  count(house_a, sort = TRUE) %>% 
+  slice(1:4)
+
+```
+
+### 2. Drop missing variables with `drop_na`
+
+```{r}
+got_houses_plot <- got_houses %>%
+  drop_na(gender, house_a)
+```
+
+### 3. Do operations within categories of a variable with `group_by`
+
+
+```{r}
+got_houses_plot <- 
+  got_houses_plot %>% 
+  group_by(house_a) %>% 
+  mutate(n = n()) %>% 
+  ungroup()
+```
+
+**n()** gives the current group size.
+
+### 4. `Filter` rows with a criteria
+
+
+There are many ways to filter data
+
+- `==`, `>`, `<=`, etc
+
+- `&`, `|`, `!`
+
+- `is.na`
+
+- `between()`
+
+- `%in%`
+
+
+```{r}
+got_houses_plot <- 
+  got_houses_plot %>% 
+  filter(n > 10) 
+```
+
+
+### 5. Make labels for gender
+
+**Using `ifelse`, only 2 conditions**
+
+```{r}
+got_houses_plot <- got_houses_plot %>%
+  mutate(gender = ifelse(gender == 0, "Female", "Male"))
+```
+
+```{r}
+got_houses_plot %>% 
+  count(gender)
+```
+
+Tip: Use **`case_when`** for more than two conditions
+
+
+### Data ready to be plotted!
+
+```{r}
+got_houses_plot <- got_houses %>%
+  drop_na(gender, house_a) %>%
+  group_by(house_a) %>%
+  mutate(n = n()) %>%
+  ungroup() %>%
+  filter(n > 10) %>%
+  mutate(gender = ifelse(gender == 0, "Female", "Male"))
+```
+
+```{r}
+got_houses_plot %>% 
+  head(4)
+```
+
+## `ggplot` grammar
+
+### 1. Let's start with a basic bar plot
+
+
+```{r}
+got_houses_plot %>%
+  ggplot(aes(house_a)) +
+  geom_bar()
+```
+ 
+### 2. Now let's add add gender to aes()
+
+
+```{r }
+got_houses_plot %>%
+  ggplot(aes(house_a, fill = gender)) +
+  geom_bar()
+```
+
+### 3. Flip the coords
+
+
+```{r}
+got_houses_plot %>%
+  ggplot(aes(y = house_a, 
+             fill= gender)) +
+  geom_bar()
+```
+
+Before we needed to use `coord_flip()`
+
+### 4. Sort by frequency
+
+
+```{r}
+got_houses_plot %>%
+  ggplot(aes(y = reorder(house_a, n),
+             fill= gender)) +
+  geom_bar()
+```
+
+### 5. Details count &#x1F485;&#x1F3FD;
+
+```{r fig.width = 12}
+got_houses_plot %>%
+  ggplot(aes(y = reorder(house_a, n), fill= gender)) +
+  geom_bar() +
+  labs(title = "Distribution of gender across the houses",
+       x = "Number of characters",
+       y = "House",
+       fill = "Gender") +
+  theme_minimal()
+```
+
+## Exercise 3. How was the evolution of the protagonists across seasons?
+
+### Go from wide to long with `pivot_longer`
+
+```{r}
+got_long <- got_complete %>%
+  pivot_longer(
+    cols = season_1:season_7,
+    names_to = "season",
+    values_to = "time",
+    names_prefix = "season_")
+
+head(got_long)
+
+```
+
+### Create a total sum of time by character
+
+**`group_by() + summarise`**
+
+```{r, message = FALSE}
+got_long %>%
+  group_by(actor) %>%
+  summarise (total = sum(time)) %>%
+  ungroup () %>% 
+  head(4)
+```
+
+**`group_by() + mutate`**
+
+```{r}
+got_long %>%
+  group_by(actor) %>%
+  mutate(total = sum(time)) %>%
+  ungroup() %>%
+  select(actor, season, time, total) %>% 
+  head(4)
+```
+
+```{r, echo = FALSE}
+got_long <- got_long %>%
+  group_by(actor) %>%
+  mutate(total = sum(time)) %>%
+  ungroup ()
+```
+
+### Back to the graph
+
+### 1. Add the aesthetics and geoms
+
+
+```{r}
+got_long %>%
+  ggplot(aes(season, time))+
+  geom_point() +
+  geom_line()
+```
+
+### 2. Add actors to aes()
+
+
+```{r}
+got_long %>%
+  ggplot(aes(season, time, group = actor)) +
+  geom_point() +
+  geom_line()
+  
+```
+
+### 3. Filter the top ten (>130min)
+
+
+```{r}
+got_long %>%
+  filter(total >130) %>%
+  ggplot(aes(season, time, group = actor)) +
+  geom_point() +
+  geom_line()
+```
+
+
+### 4. Add a color for each character
+
+
+```{r}
+got_long %>%
+  filter(total >130) %>%
+  ggplot(aes(season, time, group = actor, color = actor)) +
+  geom_point() +
+  geom_line()
+```
+
+### 5. Details
+
+```{r}
+got_long %>%
+  filter(total >130) %>%
+  ggplot(aes(season, time, group = actor, color = actor)) +
+  geom_point() +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Evolution of the protagonists across seasons",
+       x = "Season",
+       y = "Total time (min)",
+       color = "Protagonist") +
+  theme_minimal()
+```
