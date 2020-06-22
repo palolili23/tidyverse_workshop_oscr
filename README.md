@@ -20,9 +20,9 @@ During the session you will learn:
 
 - What is the Tidyverse and differences with base R
 
-- How to clean and transform your data with `dplyr`
-
 - How to use the pipe `%>%` operator
+
+- How to clean and transform your data with `dplyr`
 
 - What is tidy data and how to make your raw data tidy &#x2728;
 
@@ -34,9 +34,9 @@ During the session you will learn:
 
 You can access and use the materials for this workshop in two ways:
 
-- Use [RStudio Cloud](https://rstudio.cloud/), a cloud-based version of R and RStudio available through your browser. To joint the workshop, please _sign up for a free account_ on Rstudio Cloud before the workshop. We will send the link to the project during the workshop.
+A. Use [RStudio Cloud](https://rstudio.cloud/), a cloud-based version of R and RStudio available through your browser. To joint the workshop, please _sign up for a free account_ on Rstudio Cloud before the workshop. The link to the workshop is [this](https://bit.ly/2Bvq6ap).
 
-- Work directly on your computer, you will be able to download the project with the data and scripts before the session.  In this case, please install the following: 
+B. Work directly on your computer, you will be able to download the project with the data and scripts before the session.  In this case, please install the following: 
 
   - &#x2714; A recent version of R (~3.6), which is available for free at [cran.r-project.org](https://cran.r-project.org/)
 
@@ -44,4 +44,4 @@ You can access and use the materials for this workshop in two ways:
 
   - &#x2714; Install the following packages by connecting to the internet, opening RStudio, and running: install.packages(c("tidyverse", "here"))
 
-  - All the content for this workshop will be uploaded to the [github repo](https://github.com/palolili23/tidyverse_workshop_oscr) before the event.
+  - All the content for this workshop will be uploaded to this [github repo](https://github.com/palolili23/tidyverse_workshop_oscr) before the event.
