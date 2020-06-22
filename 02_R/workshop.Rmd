@@ -69,8 +69,8 @@ got_rank %>%
 
 
 Ascending
-```{r, eval = FALSE}
-got_rank <- got_rank %>% 
+```{r}
+got_rank %>% 
   arrange(total)
 ```
 
