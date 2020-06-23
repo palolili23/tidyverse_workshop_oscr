@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>A Tour Around the Tidyverse World</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="L. Paloma Rojas-Saunero" />
+    <meta name="date" content="2020-06-24" />
+    <link href="libs/font-awesome-5.3.1/css/fontawesome-all.min.css" rel="stylesheet" />
+    <script src="libs/kePrint-0.0.1/kePrint.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# A Tour Around the Tidyverse World
+### L. Paloma Rojas-Saunero
+### 2020-06-24
+
+---
+
+
+
+
+
+
+class: center
+
+
+---
+background-image: url(./images/tidyverse.png)
+background-position: 95% 5%
+background-size: 10%
+
+#The workshop plan
+
+During the session you will learn:
+
+--
+
+- How to use the pipe `%&gt;%` operator
+
+--
+
+- What is the Tidyverse and differences with base R
+
+--
+
+- How to clean and transform your data with `dplyr`
+
+--
+
+- What is tidy data and how to make your raw data tidy &amp;#x2728;
+
+--
+
+- The ggplot grammar &amp;#x1F4C8;&amp;#x1F4CA;
+
+--
+
+We will use this [**shared doc**](https://pad.riseup.net/p/oscr_tidyverse) to communicate (no account needed)
+---
+
+# First, what is tidyverse??
+
+--
+
+.center[![](./images/pic_tidyverse.png)]
+
+.footnote[
+As a set of principles: Human-centered, Consistent, Composable, Inclusive]
+---
+background-image: url(./images/magrittr.png)
+background-position: 95% 5%
+background-size: 10%
+
+# The Pipe operator **%&gt;%** _(and then)_
+
+.center[![](./images/Slide1.png)]
+
+---
+background-image: url(./images/magrittr.png)
+background-position: 95% 5%
+background-size: 10%
+
+# The Pipe operator **%&gt;%** _(and then)_
+
+.center[![](./images/Slide2.png)]
+
+.footnote[**Shortcut:** Control/Cmd + shift + m]
+
+---
+background-image: url(./images/magrittr.png)
+background-position: 95% 5%
+background-size: 10%
+
+# The Pipe operator **%&gt;%** _(and then)_
+
+
+.center[![](./images/Slide3.png)]
+
+.footnote[**Shortcut:** Control/Cmd + shift + m]
+
+---
+background-image: url(./images/magrittr.png)
+background-position: 95% 5%
+background-size: 10%
+
+# The Pipe operator **%&gt;%** _(and then)_
+
+.center[![](./images/Slide4.png)]
+
+.footnote[**Shortcut:** Control/Cmd + shift + m]
+
+---
+
+#R base vs. tidyverse
+
+.left[
+
+####Base R:
+
+**starwars**[**starwars**$height &lt;200&amp;
+          **starwars**$gender == "male",]
+]
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+.pull-right[
+
+####Tidyverse:
+
+**starwars** %&gt;% 
+
+  filter(height &lt;200, gender == "male")
+]
+
+---
+
+# R base vs. tidyverse
+
+.left[
+
+#### Base R:
+
+**starwars**$bmi &lt;- **starwars**$mass/(**starwars**$height/100)^2)
+
+]
+
+--
+
+&lt;br&gt;&lt;br&gt;
+
+.pull-right[
+
+#### Tidyverse:
+
+**starwars** %&gt;% 
+
+mutate(bmi = mass/((height/100)^2))
+
+]
+
+---
+
+# Hands on!
+
+Best option: 
+
+- Sign to Rstudio cloud, and join the [**project**](https://bit.ly/2Bvq6ap).
+
+- Make a **permanent copy** by clicking at right top corner. 
+
+Or 
+
+- Download the project folder and work on your Rstudio
+
+### In any case open: **02_R**,  **workshop.Rmd**
+
+- Open the tidyverse library
+
+
+```r
+library(tidyverse)
+library(here)
+```
+
+
+---
+
+# The dataset
+
+We will use 2 sets of data from the TV series **Game of thrones**:
+
+  1) `got_char.csv`: the total of minutes and seconds in TV per season for each character.
+
+  2) `got_houses.csv`: gender and the house each character represents. 
+
+
+**#nospoilers**
+
+
+.footnote[
+1) Source: <i class="fab  fa-github "></i> [benkahle/bayesianGameofThrones](https://github.com/benkahle/bayesianGameofThrones)
+
+2) Source: <i class="fab  fa-github "></i> [Preetish/GoT_screen_time](https://github.com/Preetish/GoT_screen_time)]
+
+---
+
+background-image: url(./images/readr.png)
+background-position: 95% 5%
+background-size: 10%
+
+# Import files
+
+Consider type of files:
+
+* We use `read_csv` for files delimited by commas
+
+* Use `read_csv2` for files delimited by semicolon 
+
+--
+
+* If you use data in SPSS, Stata, SAS, the best package is [rio](https://cran.r-project.org/web/packages/rio/vignettes/rio.html)
+  - It is a Swiss knife that wraps all packages 
+  
+  - Only one function to import any kind of file: `import()`
+  
+  - Only one function to export any kind of file: `export()`
+
+
+---
+background-image: url(./images/drake_nohex.jpg)
+background-position: 95% 5%
+background-size: 10%
+
+# About reproducibility
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+-  **AVOID** absolute paths or setting/clearing directory using **R Projects** 
+
+
+```r
+got_char &lt;-
+  read_csv("C:/Users/palol/Dropbox/github/
+           tidyverse_workshop_oscr/01_data/got_char.csv")
+```
+
+.footnote[Check [this post](https://www.tidyverse.org/blog/2017/12/workflow-vs-script/) to understand why [Jenny Bryan](https://rstudio.com/speakers/jenny-bryan/) will come and set your computer on &amp;#x1F525; if your first line in your R scripts are
+`setwd("C:\Users\paloma\path\that\only\I\have")` or
+`rm(list = ls())`]
+
+---
+background-image: url(./images/drake_yeshex.jpg)
+background-position: 95% 5%
+background-size: 10%
+
+# About reproducibility
+
+  - Use relative paths
+
+
+```r
+got_char &lt;- read_csv("../01_data/got_char.csv")
+```
+
+  - Even better, use `readr` + `here` 
+
+
+```r
+got_char &lt;- read_csv(here("01_data", "got_char.csv"))
+```
+
+.footnote[Check [this post](https://malco.io/2018/11/05/why-should-i-use-the-here-package-when-i-m-already-using-projects/) to understand why to use `here` inside projects]
+
+---
+
+# Import with `read_csv`
+
+
+```r
+got_char &lt;- read_csv(here("01_data", "got_char.csv"))
+
+got_houses &lt;- read_csv(here("01_data", "got_houses.csv"))
+```
+
+---
+
+### Exercise 1. Building the Top 10 within the first 3 seasons
+
+&lt;table class="table table-hover table-condensed table-responsive" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+&lt;tr&gt;&lt;th style="border-bottom:hidden; padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; " colspan="3"&gt;&lt;div style="border-bottom: 1px solid #ddd; padding-bottom: 5px; "&gt;TOP 10 Characters&lt;/div&gt;&lt;/th&gt;&lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;"&gt; Character &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;"&gt; Total acting time &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;"&gt; House &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Tyrion Lannister &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 167.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Lannister &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Jon Snow &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 124.50 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Night's Watch &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Daenerys Targaryen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 123.50 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Targaryen &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arya Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Eddard 'Ned' Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 92.50 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sansa Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 91.50 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cersei Lannister &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 86.25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Lannister &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Catelyn Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 82.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Theon Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 79.50 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Greyjoy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77.75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; House Stark &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+background-image: url(./images/dplyr.png)
+background-position: 95% 5%
+background-size: 10%
+
+## Dplyr package
+
+
+`Dplyr` is a package that provides a set of tools for efficiently manipulating datasets in R.
+
+Today we will learn the following functions:
+
+
+.pull-left[
+
+- mutate
+
+- arrange
+  
+- select
+  
+- rename]
+
+
+.pull-right[
+  
+- slice
+  
+- left_join (and family of joins) 
+  
+- group_by
+  
+- summarise/summarize
+  
+]
+
+---
+
+## 1. Merge the two tables with `left_join`
+
+.pull-left[
+
+1. Pick identifier/key variables on each datase
+
+  - got_char = **actor**
+  
+  - got_houses = **name**
+
+2. Choose how you want to merge
+
+]
+
+--
+
+.pull-right[
+
+![](https://www.garrickadenbuie.com/project/tidyexplain/images/left-join.gif)
+]
+
+
+
+.footnote[[Animated joins by @gadenbuie](https://github.com/gadenbuie/tidyexplain)]
+
+---
+
+## 2. Make new columns with `mutate`
+
+
+```r
+got_complete %&gt;%
+  mutate(total = season_1 + season_2 + season_3)
+```
+
+.pull-left[
+![](images/mutate.png)
+]
+
+.pull-right[
+
+- Make new variables
+  
+  a) With a specific value
+  
+  b) Based on other variables
+  
+  c) Change an existing variable
+
+]
+
+.footnote[Art by [Allison Horst](https://github.com/allisonhorst)]
+
+---
+
+## 3. Reorganize your rows with `arrange` 
+
+.pull-left[
+Ascending
+
+```r
+got_complete %&gt;% 
+  arrange(total)
+```
+
+
+Descending
+
+
+```r
+got_complete %&gt;% 
+  arrange(desc(total))
+```
+
+]
+
+.pull-right[
+
+![](./images/arrange.png)
+]
+
+---
+
+## 4. Select/remove columns with `select`
+
+
+```r
+got_complete %&gt;%
+  select(actor, total, house_a) 
+```
+
+--
+
+Helpful feats of `select`
+
+a) starts_with("season")
+
+b) contains("hous")
+
+c) matches("_[:digit:]")
+
+d) -actor
+
+e) -c(actor, total)
+
+f) everything()
+
+
+---
+
+## 5. **`rename`** variables
+
+new name = old name
+
+
+```r
+got_complete %&gt;% 
+  rename(Character = actor,
+         House = house_a,
+         `Total acting time` = total)
+```
+
+## 6. **`slice`** rows
+
+
+```r
+got_complete %&gt;% 
+  slice(1:10)
+```
+
+---
+
+## Pipe all steps and...ta da!
+
+
+```r
+got_char %&gt;%
+  left_join(got_houses, by = c("actor" = "name")) %&gt;% 
+  mutate(total = (season_1 + season_2 + season_3)) %&gt;% 
+  arrange(desc(total)) %&gt;% 
+  select(actor, total, house_a) %&gt;% 
+  slice(1:10) %&gt;% 
+  rename(Character = actor,
+         House = house_a,
+         `Total acting time` = total)
+```
+
+---
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+
+
+---
+
+### Exercise 2. How is the gender distribution across houses?
+
+&lt;img src="index_files/figure-html/unnamed-chunk-16-1.png" width="864" /&gt;
+
+---
+
+## 1. Explore the variables with `count`
+
+.pull-left[
+
+```r
+got_houses %&gt;% 
+  count(gender)
+```
+]
+
+--
+
+.pull-right[
+
+```r
+got_houses %&gt;% 
+  count(house_a, sort = TRUE) %&gt;% 
+  slice(1:4)
+```
+]
+
+---
+
+## 2. Drop missing observations (rows) with `drop_na`
+
+
+```r
+got_houses %&gt;%
+  drop_na(gender, house_a)
+```
+
+
+---
+
+## 3. Do operations within categories of a variable with `group_by`
+
+.pull-left[
+
+```r
+got_houses %&gt;% 
+  group_by(house_a) %&gt;% 
+  mutate(n = n()) %&gt;% 
+  ungroup()
+```
+
+**n()** gives the current group size.
+]
+
+.pull-right[
+![](./images/group_by.png)
+]
+
+---
+
+## 4. `Filter` rows with a criteria
+
+![](images/dplyr_filter.jpg)
+
+.footnote[Art by [Allison Horst](https://github.com/allisonhorst)]
+
+---
+
+## 4. Filter
+
+How would you filter houses that have at least 10 characters?
+
+a) `got_houses %&gt;% filter(n &gt;= 10)`
+
+b) `got_houses %&gt;% filter(n &lt; 10)`
+
+c) `got_houses %&gt;% filter(houses_a &gt;= 10)`
+
+---
+
+## 5. Make labels for gender
+
+### Using `ifelse`, only 2 conditions
+
+ifelse(`condition`, **TRUE**, FALSE)
+
+
+```r
+got_houses %&gt;%
+  mutate(gender = ifelse(gender == 0, "Female", "Male"))
+```
+
+
+Tip: Use **`case_when`** for more than two conditions
+
+
+---
+
+## Data ready to be plotted!
+
+
+```r
+got_houses_plot &lt;- got_houses %&gt;%
+  drop_na(gender, house_a) %&gt;%
+  group_by(house_a) %&gt;%
+  mutate(n = n()) %&gt;%
+  ungroup() %&gt;%
+  filter(n &gt; 10) %&gt;%
+  mutate(gender = ifelse(gender == 0, "Female", "Male"))
+```
+
+--
+
+
+```r
+got_houses_plot %&gt;% 
+  head(4)
+```
+
+```
+## # A tibble: 4 x 4
+##   house_a         gender name                                  n
+##   &lt;chr&gt;           &lt;chr&gt;  &lt;chr&gt;                             &lt;int&gt;
+## 1 House Frey      Male   Aegon Frey (Jinglebell)              38
+## 2 House Targaryen Male   Aegon Targaryen                      23
+## 3 House Greyjoy   Male   Adrack Humble                        25
+## 4 Night's Watch   Male   Aemon Targaryen (son of Maekar I)   104
+```
+
+
+---
+
+## `ggplot` grammar
+
+
+.pull-left[
+
+**Data** = tibble 
+
+**Aesthetics** = variables to be plotted
+
+**Geometries** = Type of plot
+
+**Theme** = colors and details
+
+We go from **`%&gt;%`** for a **`+`** for each layer
+]
+
+.pull-right[
+![](./images/layers_ggplot.png)
+]
+
+.footnote[[Adapted picture from @CedScherer](https://twitter.com/CedScherer/status/1229392907234402305/photo/2)]
+
+---
+
+## 1. Let's start with a basic bar plot
+
+.pull-left[
+
+```r
+got_houses_plot %&gt;%
+  ggplot(aes(house_a)) +
+  geom_bar()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-25-1.png" width="504" /&gt;
+]
+
+---
+## 2. Now let's add add gender to aes()
+
+.pull-left[
+
+```r
+got_houses_plot %&gt;%
+  ggplot(aes(house_a, 
+*            fill = gender)) +
+  geom_bar()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-27-1.png" width="504" /&gt;
+]
+
+---
+
+## 3. Flip the coords
+
+.pull-left[
+
+```r
+got_houses_plot %&gt;%
+* ggplot(aes(y = house_a,
+             fill= gender)) +
+  geom_bar()
+```
+]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-29-1.png" width="504" /&gt;
+]
+
+Before `ggplot2 3.3.0` (last version) we needed to use `coord_flip()`
+
+---
+
+## 4. Sort by frequency
+
+.pull-left[
+
+```r
+got_houses_plot %&gt;%
+* ggplot(aes(y = reorder(house_a, n),
+             fill= gender)) +
+  geom_bar()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-31-1.png" width="504" /&gt;
+]
+
+---
+## 5. Details count &amp;#x1F485;&amp;#x1F3FD;
+
+
+
+```r
+got_houses_plot %&gt;%
+  ggplot(aes(y = reorder(house_a, n), 
+             fill= gender)) +
+  geom_bar() +
+  labs(title = "Distribution of gender across the houses",
+       x = "Number of characters",
+       y = "House",
+       fill = "Gender") +
+  theme_minimal()
+```
+
+---
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+.center[
+&lt;img src="index_files/figure-html/unnamed-chunk-33-1.png" width="864" /&gt;
+]
+
+---
+
+## Exercise 3. How was the evolution of the protagonists across seasons?
+
+&lt;img src="index_files/figure-html/unnamed-chunk-34-1.png" width="1008" /&gt;
+
+**What variables do we need to plot this graph?**
+
+---
+
+## What is tidy data
+
+
+.pull-left[
+
+- **Rule 1**: Each **_variable_** must have its own **_column_**.
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+- **Rule 2**: Each **_observation_** must have its own **_row_**.
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+- **Rule 3**: Each **_value_** must have its own **_cell_**.
+]
+
+.pull-right[
+
+&lt;center&gt;
+![rule](images/rules.png)
+&lt;center&gt;
+]
+.foot-note[https://r4ds.had.co.nz/]
+
+---
+
+### Go from wide to long with `pivot_longer`
+
+![](images/pivot_longer.png)
+
+---
+
+### Go from wide to long with `pivot_longer`
+
+
+```r
+got_complete %&gt;%
+  pivot_longer(
+    cols = season_1:season_7,
+    names_to = "season",
+    values_to = "time",
+    names_prefix = "season_")
+
+head(got_long)
+```
+
+---
+
+### Go from wide to long with `pivot_longer`
+
+
+```r
+got_complete %&gt;%
+  pivot_longer(
+*   cols = season_1:season_7,
+    names_to = "season",
+    values_to = "time",
+    names_prefix = "season_")
+```
+
+![](images/pivot_names.png)
+
+---
+
+### Go from wide to long with `pivot_longer`
+
+
+```r
+got_complete %&gt;%
+  pivot_longer(
+    cols = season_1:season_7,
+*   names_to = "season",
+    values_to = "time",
+    names_prefix = "season_")
+```
+
+![](images/pivot_names.png)
+
+---
+
+### Go from wide to long with `pivot_longer`
+
+
+```r
+got_complete %&gt;%
+  pivot_longer(
+    cols = season_1:season_7,
+    names_to = "season",
+*   values_to = "time",
+    names_prefix = "season_")
+```
+
+![](images/pivot_values.png)
+
+---
+
+
+### Go from wide to long with `pivot_longer`
+
+
+```r
+got_long &lt;- got_complete %&gt;%
+  pivot_longer(
+    cols = season_1:season_7,
+    names_to = "season",
+    values_to = "time", 
+*   names_prefix = "season_")
+```
+
+
+
+---
+
+### Create a total sum of time by character
+
+.pull-left[
+
+**`group_by() + summarise()`**
+
+
+```r
+got_long %&gt;%
+  group_by(actor) %&gt;%
+  summarise (total = sum(time)) %&gt;%
+  ungroup ()
+```
+
+
+![](images/summarise.png)
+
+]
+
+--
+
+.pull-left[
+**`group_by() + mutate()`**
+
+
+```r
+got_long %&gt;%
+  group_by(actor) %&gt;%
+  mutate(total = sum(time)) %&gt;%
+  ungroup()
+```
+
+
+![](images/group_by.png)
+
+]
+
+
+
+
+---
+
+### Back to the graph
+
+&lt;img src="index_files/figure-html/unnamed-chunk-44-1.png" width="864" /&gt;
+
+---
+
+### 1. Add the aesthetics and geoms
+
+.pull-left[
+
+```r
+got_long %&gt;%
+  ggplot(aes(season, time))+
+  geom_point() +
+  geom_line()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-46-1.png" width="504" /&gt;
+]
+
+---
+
+### 2. Add actors to aes()
+
+.pull-left[
+
+```r
+got_long %&gt;%
+  ggplot(aes(season, time, 
+*            group = actor)) +
+  geom_point() +
+  geom_line()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-48-1.png" width="504" /&gt;
+]
+
+---
+
+### 3. Filter the top ten (&gt;130min)
+
+.pull-left[
+
+```r
+got_long %&gt;%
+  filter(total &gt;130) %&gt;%
+  ggplot(aes(season, time, 
+             group = actor))+
+  geom_point() +
+  geom_line()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-50-1.png" width="504" /&gt;
+]
+
+---
+
+### 4. Add a color for each character
+
+.pull-left[
+
+```r
+got_long %&gt;%
+  filter(total &gt;130) %&gt;%
+  ggplot(aes(season, time, 
+             group = actor, 
+*            color = actor)) +
+  geom_point() +
+  geom_line()
+```
+  ]
+
+.pull-right[
+&lt;img src="index_files/figure-html/unnamed-chunk-52-1.png" width="504" /&gt;
+]
+
+---
+### 5. Details
+
+
+```r
+got_long %&gt;%
+  filter(total &gt;130) %&gt;%
+  ggplot(aes(season, time, group = actor, color = actor)) +
+  geom_point() +
+  geom_line() +
+  theme_minimal() +
+  labs(title = "Evolution of the protagonists across seasons",
+       x = "Season",
+       y = "Total time (min)",
+       color = "Protagonist") +
+  theme_minimal()
+```
+
+
+---
+
+### Final graph
+
+&lt;img src="index_files/figure-html/unnamed-chunk-54-1.png" width="864" /&gt;
+
+---
+
+background-image: url("https://gph.to/2GrDSdk")
+background-position: 50% 50%
+
+# We did it!
+
+---
+# Useful resources
+
+- Learn tidyverse with the R4DS book (free online): https://r4ds.had.co.nz/
+
+- Practice your skills with the primers: https://rstudio.cloud/learn/primers
+
+- Join the R4DS and Tidy-tuesday community in twitter
+
+---
+name: title
+class: center, middle
+#Thank you!!!#
+
+
+###Keep in touch!
+<i class="fas  fa-paper-plane " style="color:#011A5E;"></i>&lt;/i&gt;&amp;nbsp;l.rojassaunero@erasmusmc.nl&lt;/a&gt;&lt;br&gt;
+
+<i class="fab  fa-twitter " style="color:#011A5E;"></i> &lt;a href="http://twitter.com/palolili23"&gt; &lt;/i&gt;&amp;nbsp; @palolili23&lt;/a&gt;&lt;br&gt;
+
+<i class="fab  fa-github " style="color:#011A5E;"></i> &lt;a href="http://twitter.com/palolili23"&gt; &lt;/i&gt;&amp;nbsp; @palolili23&lt;/a&gt;&lt;br&gt;
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
