@@ -45,3 +45,11 @@ B. Work directly on your computer, you will be able to download the project with
   - &#x2714; Install the following packages by connecting to the internet, opening RStudio, and running: install.packages(c("tidyverse", "here"))
 
   - All the content for this workshop will be uploaded to this [github repo](https://github.com/palolili23/tidyverse_workshop_oscr) before the event.
+  
+-----
+
+Slides for browser are available [here](https://palolili23.github.io/tidyverse_workshop_oscr_slides/index.html)
+
+Download the project folder clicking [here](https://bit.ly/3eF53ko)
+
+Check how to join [this](https://bit.ly/2Bvq6ap) project in Rstudio cloud [here](https://bit.ly/2Z1K3Ol)
